@@ -120,23 +120,33 @@ qs('.pizzaInfo--addButton').addEventListener('click',(e)=>{
             price: itemPrices[size]
         });
     }
-     updateCart(); 
-     cm();    
+    cm(); //Close the Modal 
+    updateCart();        
 });
 
 //Update the cart 
 const updateCart = ()=>
 {
     if (cart.length > 0){
-        let subTotal = 0;
+        let subtotal = 0;
         let discount = 0;
         let total = 0; 
         qs("aside").classList.add('show');
+        qs('.cart').innerHTML = ''; 
         for(let c in cart){
             let pizzaItem = dataPizzaJson.find((dataPizza)=>{
-                return dataPizza.id == cart[i].id; 
-                subtotal += cart[id].price * cart[i].qt; 
-            }) 
+                return dataPizza.id == cart[c].id;                 
+            });
+            let cartItem = qs('.models .cart--item').cloneNode(true);
+            let pizzaName = `${pizzaItem.name} (${pizzaItem.weights[cart[c].size]})`;
+            cartItem.querySelector('img').src = pizzaItem.img;
+            cartItem.querySelector('.cart--item-nome').innerHTML = pizzaName; 
+            cartItem.querySelector('.cart--item--qt').innerHTML = cart[c].qt; 
+            //cartItem.querySelector('.')
+            qs('.cart').append(cartItem);  
+
+            subtotal += cart[c].price * cart[c].qt;
+            ;  
         }
     }else{
         qs("aside").classList.remove('show'); 
