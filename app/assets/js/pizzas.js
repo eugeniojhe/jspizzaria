@@ -127,6 +127,15 @@ qs('.pizzaInfo--addButton').addEventListener('click',(e)=>{
 //Update the cart 
 const updateCart = ()=>
 {
+    qs('.menu-openner').addEventListener('click',()=>{
+       if (cart.length > 0){
+           qs('aside').style.left = '0'; 
+       }
+    });
+    qs('.menu-openner span').innerHTML = cart.length;
+    qs('.menu-closer').addEventListener('click',()=>{
+         qs('aside').style.left = '100vw'; 
+    })
     if (cart.length > 0){
         let subtotal = 0;
         let discount = 0;
@@ -138,18 +147,34 @@ const updateCart = ()=>
                 return dataPizza.id == cart[c].id;                 
             });
             let cartItem = qs('.models .cart--item').cloneNode(true);
-            let pizzaName = `${pizzaItem.name} (${pizzaItem.weights[cart[c].size]})`;
+            let pizzaName = `${pizzaItem.name} 
+                            (${pizzaItem.weights[cart[c].size]}/
+                            ${pizzaItem.sizes[cart[c].size].charAt(0).toUpperCase()})`;
             cartItem.querySelector('img').src = pizzaItem.img;
             cartItem.querySelector('.cart--item-nome').innerHTML = pizzaName; 
-            cartItem.querySelector('.cart--item--qt').innerHTML = cart[c].qt; 
-            //cartItem.querySelector('.')
-            qs('.cart').append(cartItem);  
-
+            cartItem.querySelector('.cart--item--qt').innerHTML = cart[c].qt;
+            cartItem.querySelector('.cart--item-qtmenos').addEventListener('click',()=>{
+                cart[c].qt--; 
+                if (cart[c].qt < 1){
+                    cart.splice(c,1); 
+                }; 
+                updateCart();
+            }); 
+            cartItem.querySelector('.cart--item-qtmais').addEventListener('click',()=>{
+                cart[c].qt++;
+                updateCart();  
+            }); 
             subtotal += cart[c].price * cart[c].qt;
-            ;  
+            discount = subtotal * 0.1;
+            total = subtotal - discount; 
+            qs('.cart--totalitem.subtotal span:last-child').innerHTML =  ` R$ ${subtotal.toFixed(2)}`; 
+            qs('.cart--totalitem.desconto span:last-child').innerHTML = `R$ ${discount.toFixed(2)}`;
+            qs('.cart--totalitem.total.big span:last-child').innerHTML = `R$ ${total.toFixed(2)}`; 
+            qs('.cart').append(cartItem);  
         }
     }else{
-        qs("aside").classList.remove('show'); 
+        qs("aside").classList.remove('show');
+        qs('aside').style.left = '100vw'; 
     }
 }
 
